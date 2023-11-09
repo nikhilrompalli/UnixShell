@@ -1,0 +1,9 @@
+# Part of the solution for Assignment 1 (CS 464/564)
+# by Stefan Bruda.
+
+VSIZE 5
+HSIZE 5
+
+RHOST localhost
+RPORT 25
+

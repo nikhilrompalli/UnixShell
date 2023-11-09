@@ -1,0 +1,109 @@
+Nikhil Rompalli, Padmini Rayana
+nrompalli22@ubishops.ca, prayana22@ubishops.ca, nikhilrompalli09@gmail.com
+002342463, 002343774
+
+#############################
+#######   Overview    #######
+#############################
+
+
+The code you provided is an implementation of remort server communications on top of the of a basic Unix shell. Here's an overview of what the program does and how it accomplishes its functionality:
+
+1. Configuration: The program reads terminal dimensions and remote host information from a configuration file or allows interactive user input.
+
+2. Command Loop: The main function enters a command loop where it processes various commands, including:
+   a. !exit: Exits the shell.
+   b. !keepalive: Opens a connection to a remote server and maintains a keep-alive connection.
+   c. !close: Closes an open connection to the remote server.
+
+3. Local vs. Remote Commands:
+   Any command not prefixed with ! will be executed on the remote server.
+   Commands with ! at the beginning will be treated as local system commands.
+
+4. Running Local Commands:
+   The program uses the run_it function to execute local commands.
+   It supports running commands in the background with &.
+
+5. Running Remote Commands:
+   Remote commands are executed by establishing a TCP connection to the remote server.
+   The program communicates with the remote server using socket functions.
+   The response from the remote server is received and displayed on the terminal.
+
+6. Keepalive:
+   A keepalive flag is used to track whether a remote server connection is open.
+   The program can open a connection to the remote server using !keepalive.
+
+7. Functions for Handling Commands:
+   The program includes functions for handling remote command execution and managing background processes.
+
+8. Remote Server Communication:
+   The program uses socket functions such as connectbyportint, send, and recv to communicate with the remote server.
+   It handles both input and output for remote commands.
+
+9. Error Handling:
+   The code includes error handling to manage potential issues.
+   It displays error messages when necessary.
+
+10. Cleanup:
+   he program closes the remote server socket and performs cleanup before exiting.
+
+Overall, this program provides a basic shell-like interface where you can internal commands to local to shell and as well as external cmds which runs in the remort server and customize some shell behavior through a configuration file. However, it's a simplified shell and lacks many features of a full-fledged Unix shell like Bash.
+
+
+
+###########################################
+#######   References and Credits    #######
+###########################################
+
+To implement the shell in CPP language, we have refered to this links for refrence.
+And also used ChatGPT for programming syntax, Sockets and for debugging purpose.
+https://stackoverflow.com/questions/3509011/socket-programming-in-c
+https://www.geeksforgeeks.org/socket-programming-cc/
+https://stackoverflow.com/questions/48836689/attaching-a-c-c-thread-to-a-socket
+https://www.bogotobogo.com/cplusplus/sockets_server_client.php
+https://www.geeksforgeeks.org/handling-multiple-clients-on-server-with-multithreading-using-socket-programming-in-c-cpp/
+
+
+
+
+############################
+#######   Testing    #######
+############################
+To evaluate the functionality of the provided Unix shell implementation, I performed a variety of tests that cover different aspects of the program's behavior. Here's a description of the tests i performed to ensure the shell functions correctly:
+
+1. Customizing the Configuration
+Edited the "shconfig" file to change terminal settings or update remote server information as needed. Then, repeated the testing process to ensure that the program behaves correctly with the updated configuration.
+
+2. Testing Local Commands:
+Tested a local command, for example, ! ls -l, to see if local commands are executed correctly.
+Used the & operator to run local commands in the background, e.g., ! & sleep 5, to check if they work as expected.
+
+3. Testing Remote Commands
+Executed remote commands by prefixing the command with !, such as !date, to ensure the program can establish a connection to a remote server and execute commands.
+Tested the !keepalive command to check if it maintains a connection to the remote server.
+Ran a command after !keepalive to verify that it runs directly on the remote server.
+Utilized the !close command to close an open connection to the remote server, ensuring the connection is terminated.
+Ran commands that don't have a ! at the beginning to check if they run on the remote server.
+Used the date command. If you enter date without a ! prefix, it should execute on the remote server, creating and terminating connections as expected. If you use ! date, it should print the date locally.
+
+4. Special Commands
+Tested the ! & sleep 5 command to run the sleep 5 command in the background locally, confirming that it works.
+Entered & sleep 5 without ! to run it as a remote command, ensuring it functions correctly.
+
+5. Error Handling
+Intentionally entered commands that might generate errors, such as an invalid command, to check if the program provides appropriate error messages and handles errors gracefully.
+
+6. Exiting the Program
+To exit the Simple Shell, you used the !exit command or simply pressed Ctrl+C or Ctrl+D in your terminal.
+
+
+################################################################################################################
+      What happens if you issue “asynchronous” remote commands issued in rapid succession
+################################################################################################################
+In the case of issuing asynchronous remote commands (commands prefixed by &) in rapid succession, the answers do not come back interleaved with each other. The reason for this behavior is that the program processes the commands one at a time, and it waits for the completion of the previous command before sending and processing the next one. It doesn't handle multiple asynchronous commands concurrently, so it won't interleave the responses.
+
+Specifically, when you issue asynchronous remote commands rapidly, only the response of the first command is displayed. The subsequent responses are not displayed because the program is still processing the first command, and it doesn't have the opportunity to process the next one until the first one is completed. Additionally, the responses of the subsequent commands are not lost; they are buffered and added to the response of the next command.
+
+However, when you use the keepalive command, the behavior is different. Since the socket connection is maintained continuously, the responses are real-time. This means that when each server command has a response, it gets displayed as soon as it is available. The keepalive feature ensures that the connection remains open, allowing for immediate communication between the client and the remote server without waiting for the completion of previous commands.
+
+So, in summary, without keepalive, rapid asynchronous remote commands are processed one at a time, and responses are not interleaved. With keepalive, responses are displayed in real-time as they become available, providing a more immediate and continuous communication with the remote server.
