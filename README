@@ -47,20 +47,6 @@ Overall, this program provides a basic shell-like interface where you can intern
 
 
 
-###########################################
-#######   References and Credits    #######
-###########################################
-
-To implement the shell in CPP language, we have refered to this links for refrence.
-And also used ChatGPT for programming syntax, Sockets and for debugging purpose.
-https://stackoverflow.com/questions/3509011/socket-programming-in-c
-https://www.geeksforgeeks.org/socket-programming-cc/
-https://stackoverflow.com/questions/48836689/attaching-a-c-c-thread-to-a-socket
-https://www.bogotobogo.com/cplusplus/sockets_server_client.php
-https://www.geeksforgeeks.org/handling-multiple-clients-on-server-with-multithreading-using-socket-programming-in-c-cpp/
-
-
-
 
 ############################
 #######   Testing    #######
@@ -91,15 +77,3 @@ Intentionally entered commands that might generate errors, such as an invalid co
 
 6. Exiting the Program
 To exit the Simple Shell, you used the !exit command or simply pressed Ctrl+C or Ctrl+D in your terminal.
-
-
-################################################################################################################
-      What happens if you issue “asynchronous” remote commands issued in rapid succession
-################################################################################################################
-In the case of issuing asynchronous remote commands (commands prefixed by &) in rapid succession, the answers do not come back interleaved with each other. The reason for this behavior is that the program processes the commands one at a time, and it waits for the completion of the previous command before sending and processing the next one. It doesn't handle multiple asynchronous commands concurrently, so it won't interleave the responses.
-
-Specifically, when you issue asynchronous remote commands rapidly, only the response of the first command is displayed. The subsequent responses are not displayed because the program is still processing the first command, and it doesn't have the opportunity to process the next one until the first one is completed. Additionally, the responses of the subsequent commands are not lost; they are buffered and added to the response of the next command.
-
-However, when you use the keepalive command, the behavior is different. Since the socket connection is maintained continuously, the responses are real-time. This means that when each server command has a response, it gets displayed as soon as it is available. The keepalive feature ensures that the connection remains open, allowing for immediate communication between the client and the remote server without waiting for the completion of previous commands.
-
-So, in summary, without keepalive, rapid asynchronous remote commands are processed one at a time, and responses are not interleaved. With keepalive, responses are displayed in real-time as they become available, providing a more immediate and continuous communication with the remote server.
